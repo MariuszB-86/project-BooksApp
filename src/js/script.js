@@ -7,11 +7,13 @@
     menuBooks: '.books-list',
     imageBooks: '.book__image',
     idBooks: 'data-id',
+    formFilters: '.filters'
   };
 
   const classNames = {
     choiceFavorite: 'favorite',
     imageBook: 'book__image',
+    hiddenBook: 'hidden',
   };
 
   const templates = Handlebars.compile(document.querySelector(select.templateOf.menuBooks).innerHTML);
@@ -79,30 +81,65 @@
       }
     });
     
+    /* add listener on filter form */
     form.addEventListener('click', function(event){
       console.log(event.target.checked);
 
       const formElement = event.target;
 
+      /* check if you clicked on checkbox */
       if(formElement.name == 'filter' && formElement.nodeName == 'INPUT' && formElement.type == 'checkbox'){
         console.log(formElement.value);
 
+        /* YES - check if its checked */
         if(formElement.checked){
+          /* YES - add its value to array */
           filters.push(formElement.value);
         }else{
+          /* NO - check its index in array  */
           const indexOfElement = filters.indexOf(formElement.value);
 
+          /* remove from array */
           filters.splice(indexOfElement, 1);
         }
       }
-      console.log(filters);
+      filterBooks();
     });
   };
 
-
+  /* create empty array */
   const filters = [];
 
-  const form = document.querySelector('.filters');
+  /* find form on the page */
+  const form = document.querySelector(select.formFilters);
+
+  const filterBooks = function(){
+
+    /* for each book */
+    for(let book of dataSource.books){
+      /* create variable with default value  */
+      let shouldBeHidden = false;
+
+      /* for each filter in array */
+      for(let filter of filters){
+        console.log(book.details[filter]);
+
+        if(book.details[filter]){
+          shouldBeHidden = true;
+          break;
+        }
+      }
+
+      /* find right book */
+      const itemBook = document.querySelector('.book__image[data-id ="' + book.id + '"]');
+
+      if(shouldBeHidden == true){
+        itemBook.classList.add(classNames.hiddenBook);
+      }else{
+        itemBook.classList.remove(classNames.hiddenBook);
+      }
+    }
+  };
 
   
     
