@@ -7,7 +7,8 @@
     menuBooks: '.books-list',
     imageBooks: '.book__image',
     idBooks: 'data-id',
-    formFilters: '.filters'
+    formFilters: '.filters',
+    ratingBooks: '.book__rating__fill',
   };
 
   const classNames = {
@@ -20,7 +21,7 @@
 
   const renderMenu = function(){
     for(let book of dataSource.books){
-      // console.log(book);
+      console.log(book);
 
       /* generate HTML */
       const generatedHTML = templates(book);
@@ -29,6 +30,23 @@
       /* create element DOM */
       const createDOM = utils.createDOMFromHTML(generatedHTML);
       // console.log(createDOM);
+
+      /* find rating container */
+      const ratingContainer = createDOM.querySelector(select.ratingBooks);
+
+      /* check rating and add right background style */
+      if(book.rating < 6){
+        ratingContainer.style.background = "linear-gradient(to bottom,  #fefcea 0%, #f1da36 100%)";
+      }else if(book.rating > 6 && book.rating <= 8){
+        ratingContainer.style.background = "linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)";
+      }else if(book.rating > 8 && book.rating <= 9){
+        ratingContainer.style.background = "linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)";
+      }else if(book.rating > 9){
+        ratingContainer.style.background = "linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)";
+      }
+
+      /* add  background width dependet on rating */
+      ratingContainer.style.width = book.rating * 10 +"%";
 
       /* find books container */
       const booksContainer = document.querySelector(select.menuBooks);
@@ -122,7 +140,7 @@
 
       /* for each filter in array */
       for(let filter of filters){
-        console.log(book.details[filter]);
+        // console.log(book.details[filter]);
 
         if(book.details[filter]){
           shouldBeHidden = true;
